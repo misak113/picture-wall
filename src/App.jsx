@@ -73,6 +73,10 @@ export default class App extends React.Component {
 					}
 				});
 				break;
+
+			case "DELETE_PERSON":
+				this.deletePerson(action.personId);
+				break;
 		}
 	}
 
@@ -118,6 +122,13 @@ export default class App extends React.Component {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(person),
+		})
+		.then(() => this.loadPersons())
+	}
+
+	deletePerson(personId) {
+		fetch('/person/' + personId, {
+			method: 'delete',
 		})
 		.then(() => this.loadPersons())
 	}

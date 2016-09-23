@@ -34,6 +34,15 @@ app.post('/person/:personId', (req, res) => {
 		status: "ok"
 	});
 });
+app.delete('/person/:personId', (req, res) => {
+	const personId = parseInt(req.params.personId);
+	const currentPersons = JSON.parse(fs.readFileSync(dataPath + '/persons.json'));
+	const persons = currentPersons.filter((person) => person.id !== personId);
+	fs.writeFileSync(dataPath + '/persons.json', JSON.stringify(persons, null, 2));
+	res.send({
+		status: "ok"
+	});
+});
 
 const port = process.env.PORT || 8083;
 app.listen(port, () => {

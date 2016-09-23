@@ -30,18 +30,7 @@ const initialState = {
 			profilePicture: "jm.jpg",
 		},
 	],
-	positions: [
-		{
-			personId: 1,
-			left: 90,
-			top: 46
-		},
-		{
-			personId: 2,
-			left: 90,
-			top: 20
-		},
-	],
+	positions: [],
 };
 
 ReactDOM.render(<App initialState={initialState}/>, document.getElementById('body'));

@@ -2,8 +2,11 @@
   "name": "picture-wall",
   "version": "1.0.0",
   "description": "Picture Wall ============",
-  "main": "index.html",
-  "dependencies": {},
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  },
   "devDependencies": {
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
@@ -16,6 +19,7 @@
     "webpack": "^1.13.2"
   },
   "scripts": {
+    "start": "node --harmony server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

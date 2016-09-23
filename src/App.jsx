@@ -17,6 +17,10 @@ export default class App extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+	    this.loadPositions();  
+	}
+
 	render() {
 		return <Body globalState={this.state.globalState}/>;
 	}
@@ -34,8 +38,32 @@ export default class App extends React.Component {
 						positions,
 					}
 				});
+				this.postPositions(positions);
 				break;
 		}
+	}
+
+	loadPositions() {
+		fetch('/positions')
+		.then((response) => response.json())
+		.then((positions) => this.setState({
+			globalState: {
+				...this.state.globalState,
+				positions,
+			}
+		}));
+	}
+
+	postPositions(positions) {
+		fetch('/positions', {
+			method: 'post',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(positions),
+		})
+		.then(() => this.loadPositions())
 	}
 }
 App.childContextTypes = {

@@ -49,8 +49,54 @@ export default class Card extends React.Component {
 							/>
 						)
 					}
-					<small>{person.firstName} {person.lastName}</small>
+					<small>
+						{
+							!editable
+							? person.firstName
+							: (
+								<input
+									style={{ width: "100%" }}
+									value={this.state.editedPerson.firstName}
+									placeholder="first name"
+									onChange={(event) => this.setState({ editedPerson: {
+										...this.state.editedPerson,
+										firstName: event.target.value,
+									}})}
+								/>
+							)
+						}
+						{
+							!editable
+							? person.lastName
+							: (
+								<input
+									style={{ width: "100%" }}
+									value={this.state.editedPerson.lastName}
+									placeholder="last name"
+									onChange={(event) => this.setState({ editedPerson: {
+										...this.state.editedPerson,
+										lastName: event.target.value,
+									}})}
+								/>
+							)
+						}
+					</small>
 				</h2>
+				{
+					!editable
+					? null
+					: (
+						<input
+							style={{ width: "100%" }}
+							value={this.state.editedPerson.departement}
+							placeholder="departement"
+							onChange={(event) => this.setState({ editedPerson: {
+								...this.state.editedPerson,
+								departement: event.target.value,
+							}})}
+						/>
+					)
+				}
 				<img
 					src={"./pictures/" + person.profilePicture}
 					style={{

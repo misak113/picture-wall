@@ -5,6 +5,38 @@ import Cards from './Cards';
 export default class Body extends React.Component {
 
 	render() {
-		return <Cards persons={this.props.globalState.persons} positions={this.props.globalState.positions}/>;
+		return (
+			<div>
+				<button onClick={() => this.addPerson()}>+</button>
+				<Cards
+					persons={this.getAllPersons()}
+					positions={this.props.globalState.positions}
+					editablePersonIds={this.props.globalState.editablePersonIds}
+				/>
+			</div>
+		);
+	}
+
+	getAllPersons() {
+		return [...this.props.globalState.persons, ...this.props.globalState.newPersons];
+	}
+
+	addPerson() {
+		const newPerson = {
+			id: this.getNextPersonId(),
+			firstName: "",
+			lastName: "",
+			nick: "",
+			departement: "",
+			profilePicture: "",
+		};
+		this.context.dispatch({ type: "ADD_PERSON", person: newPerson });
+	}
+
+	getNextPersonId() {
+		return this.getAllPersons().reduce((maxId, person) => person.id > maxId ? person.id : maxId, 0) + 1;
 	}
 }
+Body.contextTypes = {
+	dispatch: React.PropTypes.any
+};

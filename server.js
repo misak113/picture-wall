@@ -24,6 +24,16 @@ app.post('/positions', (req, res) => {
 app.get('/persons', (req, res) => {
 	res.send(JSON.parse(fs.readFileSync(dataPath + '/persons.json')));
 });
+app.post('/person/:personId', (req, res) => {
+	const newPerson = req.body;
+	const currentPersons = JSON.parse(fs.readFileSync(dataPath + '/persons.json'));
+	const persons = currentPersons.filter((person) => person.id !== newPerson.id);
+	persons.push(newPerson);
+	fs.writeFileSync(dataPath + '/persons.json', JSON.stringify(persons, null, 2));
+	res.send({
+		status: "ok"
+	});
+});
 
 const port = process.env.PORT || 8083;
 app.listen(port, () => {

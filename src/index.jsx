@@ -6,6 +6,8 @@ import App from './App';
 const initialState = {
 	persons: [],
 	positions: [],
+	newPersons: [],
+	editablePersonIds: [],
 };
 
 ReactDOM.render(<App initialState={initialState}/>, document.getElementById('body'));

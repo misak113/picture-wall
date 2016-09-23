@@ -8,10 +8,12 @@ export default class Card extends React.Component {
 		this.state = {
 			deltaMoveX: 0,
 			deltaMoveY: 0,
+			editedPerson: {...props.person},
 		};
 	}
 
 	render() {
+		const editable = this.props.editable;
 		const person = this.props.person;
 		const position = this.getPosition();
 		return (
@@ -31,7 +33,24 @@ export default class Card extends React.Component {
 				onMouseMove={(event) => this.move(event)}
 				onMouseOut={() => this.stopMoving()}
 			>
-				<h2>{person.firstName} {person.lastName}</h2>
+				<h2>
+					{
+						!editable
+						? person.nick
+						: (
+							<input
+								style={{ width: "100%" }}
+								value={this.state.editedPerson.nick}
+								placeholder="nick"
+								onChange={(event) => this.setState({ editedPerson: {
+									...this.state.editedPerson,
+									nick: event.target.value,
+								}})}
+							/>
+						)
+					}
+					<small>{person.firstName} {person.lastName}</small>
+				</h2>
 				<img
 					src={"./pictures/" + person.profilePicture}
 					style={{
@@ -39,6 +58,11 @@ export default class Card extends React.Component {
 						height: "5vw",
 					}}
 				/>
+				{
+					editable
+					? <button onClick={() => this.save()}>Save</button>
+					: null
+				}
 			</div>
 		);
 	}
@@ -91,6 +115,14 @@ export default class Card extends React.Component {
 				deltaMoveY: this.state.deltaMoveY + (event.pageY - this.state.lastMoveY) / document.body.clientHeight * 100,
 			});
 		}
+	}
+
+	save() {
+		const editedPerson = this.state.editedPerson;
+		this.context.dispatch({
+			type: "SAVE_PERSON",
+			person: editedPerson
+		});
 	}
 }
 Card.contextTypes = {

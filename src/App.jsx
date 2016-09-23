@@ -41,6 +41,29 @@ export default class App extends React.Component {
 				});
 				this.postPositions(positions);
 				break;
+
+			case "SAVE_PERSON":
+				const savePerson = action.person;
+				this.setState({
+					globalState: {
+						...globalState,
+						newPersons: globalState.newPersons.filter((person) => person.id !== savePerson.id),
+						editablePersonIds: globalState.editablePersonIds.filter((personId) => personId !== savePerson.id),
+					}
+				});
+				this.postPerson(savePerson);
+				break;
+
+			case "ADD_PERSON":
+				const newPerson = action.person;
+				this.setState({
+					globalState: {
+						...globalState,
+						newPersons: [...globalState.newPersons, newPerson],
+						editablePersonIds: [...globalState.editablePersonIds, newPerson.id]
+					}
+				});
+				break;
 		}
 	}
 
@@ -76,6 +99,18 @@ export default class App extends React.Component {
 				persons,
 			}
 		}));
+	}
+
+	postPerson(person) {
+		fetch('/person/' + person.id, {
+			method: 'post',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(person),
+		})
+		.then(() => this.loadPersons())
 	}
 }
 App.childContextTypes = {

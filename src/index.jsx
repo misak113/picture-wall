@@ -1,7 +1,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Body from './Body';
+import App from './App';
 
 const initialState = {
 	persons: [
@@ -21,6 +21,14 @@ const initialState = {
 			departement: "it",
 			profilePicture: "vch.jpg",
 		},
+		{
+			id: 3,
+			firstName: "Jan",
+			lastName: "Machala",
+			nick: "Masala",
+			departement: "it",
+			profilePicture: "jm.jpg",
+		},
 	],
 	positions: [
 		{
@@ -36,4 +44,4 @@ const initialState = {
 	],
 };
 
-ReactDOM.render(<Body state={initialState}/>, document.getElementById('body'));
+ReactDOM.render(<App initialState={initialState}/>, document.getElementById('body'));

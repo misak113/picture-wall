@@ -13,6 +13,7 @@ export default class Card extends React.Component {
 	}
 
 	render() {
+		const adminView = this.props.adminView;
 		const editable = this.props.editable;
 		const person = this.props.person;
 		const position = this.getPosition();
@@ -35,9 +36,8 @@ export default class Card extends React.Component {
 			>
 				<h2>
 					{
-						!editable
-						? person.nick
-						: (
+						adminView && editable
+						? (
 							<input
 								style={{ width: "100%" }}
 								value={this.state.editedPerson.nick}
@@ -48,12 +48,12 @@ export default class Card extends React.Component {
 								}})}
 							/>
 						)
+						: person.nick
 					}
 					<small>
 						{
-							!editable
-							? person.firstName
-							: (
+							adminView && editable
+							? (
 								<input
 									style={{ width: "100%" }}
 									value={this.state.editedPerson.firstName}
@@ -64,11 +64,11 @@ export default class Card extends React.Component {
 									}})}
 								/>
 							)
+							: person.firstName
 						}
 						{
-							!editable
-							? person.lastName
-							: (
+							adminView && editable
+							? (
 								<input
 									style={{ width: "100%" }}
 									value={this.state.editedPerson.lastName}
@@ -79,13 +79,13 @@ export default class Card extends React.Component {
 									}})}
 								/>
 							)
+							: person.lastName
 						}
 					</small>
 				</h2>
 				{
-					!editable
-					? null
-					: (
+					adminView && editable
+					? (
 						<input
 							style={{ width: "100%" }}
 							value={this.state.editedPerson.departement}
@@ -96,6 +96,7 @@ export default class Card extends React.Component {
 							}})}
 						/>
 					)
+					: null
 				}
 				<img
 					src={"./pictures/" + person.profilePicture}
@@ -105,17 +106,17 @@ export default class Card extends React.Component {
 					}}
 				/>
 				{
-					editable
+					adminView && editable
 					? <button onClick={() => this.save()}>Save</button>
 					: null
 				}
 				{
-					!editable
+					adminView && !editable
 					? <button onClick={() => this.context.dispatch({ type: "EDIT_PERSON", personId: person.id })}>Edit</button>
 					: null
 				}
 				{
-					!editable
+					adminView && !editable
 					? <button onClick={() => this.context.dispatch({ type: "DELETE_PERSON", personId: person.id })}>Delete</button>
 					: null
 				}

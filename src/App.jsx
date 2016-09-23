@@ -20,6 +20,12 @@ export default class App extends React.Component {
 	componentDidMount() {
 	    this.loadPositions();  
 	    this.loadPersons();  
+	    this.setState({
+	    	globalState: {
+	    		...this.state.globalState,
+	    		adminView: window.location.pathname.indexOf('/admin') === 0,
+	    	}
+	    });
 	}
 
 	render() {
@@ -81,7 +87,9 @@ export default class App extends React.Component {
 	}
 
 	loadPositions() {
-		fetch('/positions')
+		fetch('/positions', {
+			headers: this.getHeaders(),
+		})
 		.then((response) => response.json())
 		.then((positions) => this.setState({
 			globalState: {
@@ -92,9 +100,10 @@ export default class App extends React.Component {
 	}
 
 	postPositions(positions) {
-		fetch('/positions', {
+		fetch('/admin/positions', {
 			method: 'post',
 			headers: {
+				...this.getHeaders(),
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
@@ -104,7 +113,9 @@ export default class App extends React.Component {
 	}
 
 	loadPersons() {
-		fetch('/persons')
+		fetch('/persons', {
+			headers: this.getHeaders(),
+		})
 		.then((response) => response.json())
 		.then((persons) => this.setState({
 			globalState: {
@@ -115,11 +126,12 @@ export default class App extends React.Component {
 	}
 
 	postPerson(person) {
-		fetch('/person/' + person.id, {
+		fetch('/admin/person/' + person.id, {
 			method: 'post',
 			headers: {
+				...this.getHeaders(),
 				'Accept': 'application/json',
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(person),
 		})
@@ -127,10 +139,32 @@ export default class App extends React.Component {
 	}
 
 	deletePerson(personId) {
-		fetch('/person/' + personId, {
+		fetch('/admin/person/' + personId, {
 			method: 'delete',
+			headers: this.getHeaders(),
 		})
 		.then(() => this.loadPersons())
+	}
+
+	getHeaders() {
+		const cookies = this.getCookies();
+		return {
+			'Authorization': 'Basic ' + cookies['Authorization'],
+		};
+	}
+
+	getCookies() {
+		return document.cookie.split(';')
+		.map((cookieLine) => {
+			return cookieLine.split('=').map((cookiePart) => {
+				return cookiePart.trim();
+			});
+		})
+		.filter((parts) => parts[0])
+		.reduce((object, parts) => ({
+			 ...object,
+			 [decodeURIComponent(parts[0])]: decodeURIComponent(parts[1]),
+		}), {});
 	}
 }
 App.childContextTypes = {

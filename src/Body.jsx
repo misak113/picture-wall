@@ -7,11 +7,12 @@ export default class Body extends React.Component {
 	render() {
 		return (
 			<div>
-				<button onClick={() => this.addPerson()}>+</button>
+				{this.props.globalState.adminView ? <button onClick={() => this.addPerson()}>+</button> : null}
 				<Cards
 					persons={this.getAllPersons()}
 					positions={this.props.globalState.positions}
 					editablePersonIds={this.props.globalState.editablePersonIds}
+					adminView={this.props.globalState.adminView}
 				/>
 			</div>
 		);

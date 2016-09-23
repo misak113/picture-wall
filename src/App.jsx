@@ -19,6 +19,7 @@ export default class App extends React.Component {
 
 	componentDidMount() {
 	    this.loadPositions();  
+	    this.loadPersons();  
 	}
 
 	render() {
@@ -64,6 +65,17 @@ export default class App extends React.Component {
 			body: JSON.stringify(positions),
 		})
 		.then(() => this.loadPositions())
+	}
+
+	loadPersons() {
+		fetch('/persons')
+		.then((response) => response.json())
+		.then((persons) => this.setState({
+			globalState: {
+				...this.state.globalState,
+				persons,
+			}
+		}));
 	}
 }
 App.childContextTypes = {

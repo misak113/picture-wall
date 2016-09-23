@@ -21,6 +21,9 @@ app.post('/positions', (req, res) => {
 		status: "ok"
 	});
 });
+app.get('/persons', (req, res) => {
+	res.send(JSON.parse(fs.readFileSync(dataPath + '/persons.json')));
+});
 
 const port = process.env.PORT || 8083;
 app.listen(port, () => {

@@ -109,6 +109,11 @@ export default class Card extends React.Component {
 					? <button onClick={() => this.save()}>Save</button>
 					: null
 				}
+				{
+					!editable
+					? <button onClick={() => this.context.dispatch({ type: "EDIT_PERSON", personId: person.id })}>Edit</button>
+					: null
+				}
 			</div>
 		);
 	}

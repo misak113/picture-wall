@@ -64,6 +64,15 @@ export default class App extends React.Component {
 					}
 				});
 				break;
+
+			case "EDIT_PERSON":
+				this.setState({
+					globalState: {
+						...globalState,
+						editablePersonIds: [...globalState.editablePersonIds, action.personId]
+					}
+				});
+				break;
 		}
 	}
 

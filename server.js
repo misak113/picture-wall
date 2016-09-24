@@ -32,6 +32,15 @@ const auth = function (req, res, next) {
 	};
 };
 
+function getData(type) {
+	const dataFilePath = dataPath + '/' + type + '.json';
+	try {
+		return JSON.parse(fs.readFileSync(dataFilePath))
+	} catch (e) {
+		return [];
+	}
+}
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(express.static('dist'));
@@ -40,7 +49,7 @@ app.use('/admin', auth, express.static('public'));
 app.use('/admin', auth, express.static('dist'));
 
 app.get('/positions', (req, res) => {
-	res.send(JSON.parse(fs.readFileSync(dataPath + '/positions.json')));
+	res.send(getData('positions'));
 });
 app.post('/admin/positions', auth, (req, res) => {
 	const positions = req.body;
@@ -50,11 +59,11 @@ app.post('/admin/positions', auth, (req, res) => {
 	});
 });
 app.get('/persons', (req, res) => {
-	res.send(JSON.parse(fs.readFileSync(dataPath + '/persons.json')));
+	res.send(getData('persons'));
 });
 app.post('/admin/person/:personId', auth, (req, res) => {
 	const newPerson = req.body;
-	const currentPersons = JSON.parse(fs.readFileSync(dataPath + '/persons.json'));
+	const currentPersons = getData('persons');
 	const persons = currentPersons.filter((person) => person.id !== newPerson.id);
 	persons.push(newPerson);
 	fs.writeFileSync(dataPath + '/persons.json', JSON.stringify(persons, null, 2));
@@ -64,7 +73,7 @@ app.post('/admin/person/:personId', auth, (req, res) => {
 });
 app.delete('/admin/person/:personId', auth, (req, res) => {
 	const personId = parseInt(req.params.personId);
-	const currentPersons = JSON.parse(fs.readFileSync(dataPath + '/persons.json'));
+	const currentPersons = getData('persons');
 	const persons = currentPersons.filter((person) => person.id !== personId);
 	fs.writeFileSync(dataPath + '/persons.json', JSON.stringify(persons, null, 2));
 	res.send({

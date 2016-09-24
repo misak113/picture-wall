@@ -41,6 +41,10 @@ function getData(type) {
 	}
 }
 
+function saveData(type, data) {
+	fs.writeFileSync(dataPath + '/' + type + '.json', JSON.stringify(data, null, 2));
+}
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(express.static('dist'));
@@ -53,7 +57,7 @@ app.get('/positions', (req, res) => {
 });
 app.post('/admin/positions', auth, (req, res) => {
 	const positions = req.body;
-	fs.writeFileSync(dataPath + '/positions.json', JSON.stringify(positions, null, 2));
+	saveData('positions', positions);
 	res.send({
 		status: "ok"
 	});
@@ -66,7 +70,7 @@ app.post('/admin/person/:personId', auth, (req, res) => {
 	const currentPersons = getData('persons');
 	const persons = currentPersons.filter((person) => person.id !== newPerson.id);
 	persons.push(newPerson);
-	fs.writeFileSync(dataPath + '/persons.json', JSON.stringify(persons, null, 2));
+	saveData('persons', persons);
 	res.send({
 		status: "ok"
 	});
@@ -75,7 +79,7 @@ app.delete('/admin/person/:personId', auth, (req, res) => {
 	const personId = parseInt(req.params.personId);
 	const currentPersons = getData('persons');
 	const persons = currentPersons.filter((person) => person.id !== personId);
-	fs.writeFileSync(dataPath + '/persons.json', JSON.stringify(persons, null, 2));
+	saveData('persons', persons);
 	res.send({
 		status: "ok"
 	});

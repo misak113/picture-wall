@@ -17,6 +17,9 @@ export default class Card extends React.Component {
 		const adminView = this.props.adminView;
 		const editable = this.props.editable;
 		const person = this.props.person;
+		const editedPerson = this.state.editedPerson;
+		const deltaMoveX = this.state.deltaMoveX;
+		const deltaMoveY = this.state.deltaMoveY;
 		const position = this.getPosition();
 		return (
 			<div
@@ -25,8 +28,8 @@ export default class Card extends React.Component {
 					textAlign: "center",
 					position: "absolute",
 					fontSize: "0.4em",
-					left: (position.left + this.state.deltaMoveX) + "%",
-					top: (position.top + this.state.deltaMoveY) + "%",
+					left: (position.left + deltaMoveX) + "%",
+					top: (position.top + deltaMoveY) + "%",
 					width: "6.7vw",
 					height: "6.7vw",
 				}}
@@ -41,10 +44,10 @@ export default class Card extends React.Component {
 						? (
 							<input
 								style={{ width: "100%" }}
-								value={this.state.editedPerson.nick}
+								value={editedPerson.nick}
 								placeholder="nick"
 								onChange={(event) => this.setState({ editedPerson: {
-									...this.state.editedPerson,
+									...editedPerson,
 									nick: event.target.value,
 								}})}
 							/>
@@ -57,10 +60,10 @@ export default class Card extends React.Component {
 							? (
 								<input
 									style={{ width: "100%" }}
-									value={this.state.editedPerson.firstName}
+									value={editedPerson.firstName}
 									placeholder="first name"
 									onChange={(event) => this.setState({ editedPerson: {
-										...this.state.editedPerson,
+										...editedPerson,
 										firstName: event.target.value,
 									}})}
 								/>
@@ -72,10 +75,10 @@ export default class Card extends React.Component {
 							? (
 								<input
 									style={{ width: "100%" }}
-									value={this.state.editedPerson.lastName}
+									value={editedPerson.lastName}
 									placeholder="last name"
 									onChange={(event) => this.setState({ editedPerson: {
-										...this.state.editedPerson,
+										...editedPerson,
 										lastName: event.target.value,
 									}})}
 								/>
@@ -89,10 +92,10 @@ export default class Card extends React.Component {
 					? (
 						<input
 							style={{ width: "100%" }}
-							value={this.state.editedPerson.departement}
+							value={editedPerson.departement}
 							placeholder="departement"
 							onChange={(event) => this.setState({ editedPerson: {
-								...this.state.editedPerson,
+								...editedPerson,
 								departement: event.target.value,
 							}})}
 						/>
@@ -100,7 +103,7 @@ export default class Card extends React.Component {
 					: null
 				}
 				<img
-					src={"picture/" + (this.state.editedPerson.profilePicture || person.profilePicture)}
+					src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
 					style={{
 						width: "5vw",
 						height: "5vw",

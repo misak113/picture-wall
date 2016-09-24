@@ -45,7 +45,12 @@ function getData(type) {
 }
 
 function saveData(type, data) {
-	fs.writeFileSync(dataPath + '/' + type + '.json', JSON.stringify(data, null, 2));
+	const encodedData = JSON.stringify(data, null, 2);
+	fs.writeFileSync(dataPath + '/' + type + '.json', encodedData);
+	fs.writeFileSync(
+		dataPath + '/backup/' + type + '.' + computeFileHash(encodedData) + '.json',
+		encodedData
+	);
 }
 
 function computeFileHash(fileData) {

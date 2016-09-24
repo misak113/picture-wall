@@ -20,6 +20,8 @@
     "webpack": "^1.13.2"
   },
   "scripts": {
+    "build": "webpack",
+    "develop": "webpack --watch",
     "start": "node --harmony server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

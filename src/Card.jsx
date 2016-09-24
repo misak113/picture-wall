@@ -1,5 +1,6 @@
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 export default class Card extends React.Component {
 
@@ -99,12 +100,17 @@ export default class Card extends React.Component {
 					: null
 				}
 				<img
-					src={"./pictures/" + person.profilePicture}
+					src={"picture/" + (this.state.editedPerson.profilePicture || person.profilePicture)}
 					style={{
 						width: "5vw",
 						height: "5vw",
 					}}
 				/>
+				{
+					adminView && editable
+					? <input ref="picture-input" type="file" onChange={(event) => this.uploadProfilePicture(event)}/>
+					: null
+				}
 				{
 					adminView && editable
 					? <button onClick={() => this.save()}>Save</button>
@@ -180,6 +186,18 @@ export default class Card extends React.Component {
 			type: "SAVE_PERSON",
 			person: editedPerson
 		});
+	}
+
+	uploadProfilePicture(event) {
+		const pictureInput = ReactDOM.findDOMNode(this.refs['picture-input']);
+		this.context.dispatch({
+			type: "UPLOAD_IMAGE",
+			file: pictureInput.files[0],
+			done: (fileName) => this.setState({ editedPerson: {
+				...this.state.editedPerson,
+				profilePicture: fileName,
+			}}),
+		})
 	}
 }
 Card.contextTypes = {

@@ -3,8 +3,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const basicAuth = require('basic-auth');
 const fs = require('fs');
+const crypto = require('crypto');
+const multer = require('multer');
 
 const dataPath = __dirname + '/data';
+const uploadPath = __dirname + '/upload';
 
 const app = express();
 
@@ -45,12 +48,22 @@ function saveData(type, data) {
 	fs.writeFileSync(dataPath + '/' + type + '.json', JSON.stringify(data, null, 2));
 }
 
+function computeFileHash(fileData) {
+	const md5sum = crypto.createHash('md5');
+	md5sum.update(fileData);
+	return md5sum.digest('hex');
+}
+
+const upload = multer({ dest: __dirname + '/tmp' });
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(express.static('dist'));
+app.use(express.static('upload'));
 app.use('/admin', auth);
 app.use('/admin', auth, express.static('public'));
 app.use('/admin', auth, express.static('dist'));
+app.use('/admin', auth, express.static('upload'));
 
 app.get('/positions', (req, res) => {
 	res.send(getData('positions'));
@@ -82,6 +95,27 @@ app.delete('/admin/person/:personId', auth, (req, res) => {
 	saveData('persons', persons);
 	res.send({
 		status: "ok"
+	});
+});
+app.post('/admin/picture', auth, upload.single('file'), (req, res) => {
+	const file = req.file;
+	fs.readFile(file.path, function (error, data) {
+		if (error) {
+			throw error;
+		}
+		const lastIndexOfDot = file.originalname.lastIndexOf('.');
+		const extension = lastIndexOfDot !== -1 ? file.originalname.substring(lastIndexOfDot) : '';
+		const fileHash = computeFileHash(data);
+		const uploadFileName = fileHash + extension;
+		const uploadFilePath = uploadPath + '/picture/' + uploadFileName;
+		fs.writeFile(uploadFilePath, data, function (error) {
+			if (error) {
+				throw error;
+			}
+			res.send({
+				fileName: uploadFileName
+			});
+		});
 	});
 });
 

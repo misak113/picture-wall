@@ -83,6 +83,13 @@ export default class App extends React.Component {
 			case "DELETE_PERSON":
 				this.deletePerson(action.personId);
 				break;
+
+			case "UPLOAD_IMAGE":
+				this.uploadImage(action.file)
+				.then((response) => {
+					action.done(response.fileName);
+				});
+				break;
 		}
 	}
 
@@ -144,6 +151,17 @@ export default class App extends React.Component {
 			headers: this.getHeaders(),
 		})
 		.then(() => this.loadPersons())
+	}
+
+	uploadImage(file) {
+		const data = new FormData();
+		data.append('file', file);
+		return fetch('/admin/picture', {
+			method: 'post',
+			headers: this.getHeaders(),
+			body: data,
+		})
+		.then((response) => response.json());
 	}
 
 	getHeaders() {

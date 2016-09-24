@@ -35,8 +35,9 @@ export default class Card extends React.Component {
 					fontSize: "0.4em",
 					left: (position.left + deltaMoveX) + "%",
 					top: (position.top + deltaMoveY) + "%",
-					width: "6.7vw",
-					height: "6.7vw",
+					transform: "rotate(" + position.rotation + "deg)",
+					width: "8vw",
+					height: "8vw",
 				}}
 				onMouseDown={(event) => this.startMoving(event)}
 			>
@@ -107,8 +108,8 @@ export default class Card extends React.Component {
 				<img
 					src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
 					style={{
-						width: "5vw",
-						height: "5vw",
+						width: "6vw",
+						height: "6vw",
 					}}
 				/>
 				{
@@ -139,7 +140,8 @@ export default class Card extends React.Component {
 		return this.props.position || {
 			personId: this.props.person.id,
 			left: 0,
-			top: 0
+			top: 0,
+			rotation: 0
 		};
 	}
 
@@ -162,6 +164,7 @@ export default class Card extends React.Component {
 				personId: this.props.person.id,
 				left: Math.round(position.left + this.state.deltaMoveX),
 				top: Math.round(position.top + this.state.deltaMoveY),
+				rotation: Math.round(Math.random() * 40) - 20
 			}});
 			this.setState({
 				moving: false,

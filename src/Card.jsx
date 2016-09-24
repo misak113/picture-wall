@@ -13,6 +13,11 @@ export default class Card extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+		window.document.addEventListener('mouseup', () => this.stopMoving());
+		window.document.addEventListener('mousemove', (event) => this.move(event));
+	}
+
 	render() {
 		const adminView = this.props.adminView;
 		const editable = this.props.editable;
@@ -34,9 +39,6 @@ export default class Card extends React.Component {
 					height: "6.7vw",
 				}}
 				onMouseDown={(event) => this.startMoving(event)}
-				onMouseUp={() => this.stopMoving()}
-				onMouseMove={(event) => this.move(event)}
-				onMouseOut={() => this.stopMoving()}
 			>
 				<h2>
 					{
@@ -180,6 +182,7 @@ export default class Card extends React.Component {
 				deltaMoveX: this.state.deltaMoveX + (event.pageX - this.state.lastMoveX) / document.body.clientWidth * 100,
 				deltaMoveY: this.state.deltaMoveY + (event.pageY - this.state.lastMoveY) / document.body.clientHeight * 100,
 			});
+			this.deselectAll();
 		}
 	}
 
@@ -201,6 +204,10 @@ export default class Card extends React.Component {
 				profilePicture: fileName,
 			}}),
 		})
+	}
+
+	deselectAll() {
+		window.getSelection().empty();
 	}
 }
 Card.contextTypes = {

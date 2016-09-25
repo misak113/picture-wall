@@ -20,6 +20,7 @@ export default class App extends React.Component {
 	componentDidMount() {
 	    this.loadPositions();  
 	    this.loadPersons();  
+	    this.loadSettings();
 	    this.setState({
 	    	globalState: {
 	    		...this.state.globalState,
@@ -99,6 +100,10 @@ export default class App extends React.Component {
 					action.done(response.fileName);
 				});
 				break;
+
+			case "SAVE_SETTINGS":
+				this.postSettings(action.settings);
+				break;
 		}
 	}
 
@@ -174,6 +179,32 @@ export default class App extends React.Component {
 			body: data,
 		})
 		.then((response) => response.json());
+	}
+
+	loadSettings() {
+		fetch('/settings', {
+			headers: this.getHeaders(),
+		})
+		.then((response) => response.json())
+		.then((settings) => this.setState({
+			globalState: {
+				...this.state.globalState,
+				settings,
+			}
+		}));
+	}
+
+	postSettings(settings) {
+		fetch('/admin/settings', {
+			method: 'post',
+			headers: {
+				...this.getHeaders(),
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(settings),
+		})
+		.then(() => this.loadSettings())
 	}
 
 	getHeaders() {

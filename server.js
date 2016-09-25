@@ -39,12 +39,12 @@ const auth = function (req, res, next) {
 	};
 };
 
-function getData(type) {
+function getData(type, defaultValue = []) {
 	const dataFilePath = dataPath + '/' + type + '.json';
 	try {
 		return JSON.parse(fs.readFileSync(dataFilePath))
 	} catch (e) {
-		return [];
+		return defaultValue;
 	}
 }
 
@@ -128,6 +128,16 @@ app.post('/admin/picture', auth, upload.single('file'), (req, res) => {
 				fileName: uploadFileName
 			});
 		});
+	});
+});
+app.get('/settings', (req, res) => {
+	res.send(getData('settings', {}));
+});
+app.post('/admin/settings', auth, (req, res) => {
+	const settings = req.body;
+	saveData('settings', settings);
+	res.send({
+		status: "ok"
 	});
 });
 

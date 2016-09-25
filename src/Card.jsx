@@ -104,7 +104,7 @@ export default class Card extends React.Component {
 					zIndex: this.state.revealed ? "10" : null,
 					transform:
 						"rotate(" + (this.state.revealed ? Math.round(Math.random() * 20) - 10 : position.rotation) + "deg) "
-						+ "scale(" + (this.state.revealed ? '1' : '0.6') + ")",
+						+ "scale(" + (this.state.revealed ? '1' : '0.4') + ")",
 				}}
 			>
 				<div className="card-image waves-effect waves-block waves-light">

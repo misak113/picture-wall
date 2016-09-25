@@ -80,6 +80,15 @@ export default class App extends React.Component {
 				});
 				break;
 
+			case "CANCEL_EDIT_PERSON":
+				this.setState({
+					globalState: {
+						...globalState,
+						editablePersonIds: globalState.editablePersonIds.filter((personId) => personId !== action.personId),
+					}
+				});
+				break;
+
 			case "DELETE_PERSON":
 				this.deletePerson(action.personId);
 				break;

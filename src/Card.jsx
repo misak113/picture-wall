@@ -33,8 +33,8 @@ export default class Card extends React.Component {
 					textAlign: "center",
 					position: "absolute",
 					fontSize: "0.4em",
-					left: (position.left + deltaMoveX) + "%",
-					top: (position.top + deltaMoveY) + "%",
+					left: (position.left + deltaMoveX) + "vw",
+					top: (position.top + deltaMoveY) + "vw",
 					transform: "rotate(" + position.rotation + "deg)",
 					width: "8vw",
 					height: "8vw",
@@ -183,7 +183,7 @@ export default class Card extends React.Component {
 				lastMoveX: event.pageX,
 				lastMoveY: event.pageY,
 				deltaMoveX: this.state.deltaMoveX + (event.pageX - this.state.lastMoveX) / document.body.clientWidth * 100,
-				deltaMoveY: this.state.deltaMoveY + (event.pageY - this.state.lastMoveY) / document.body.clientHeight * 100,
+				deltaMoveY: this.state.deltaMoveY + (event.pageY - this.state.lastMoveY) / document.body.clientWidth * 100,
 			});
 			this.deselectAll();
 		}

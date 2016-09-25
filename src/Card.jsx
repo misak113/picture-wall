@@ -1,6 +1,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as styles from './CardStyle';
 
 export default class Card extends React.Component {
 
@@ -29,15 +30,10 @@ export default class Card extends React.Component {
 		return (
 			<div
 				style={{
-					border: "1px solid black",
-					textAlign: "center",
-					position: "absolute",
-					fontSize: "0.4vw",
+					...styles.card,
 					left: (position.left + deltaMoveX) + "vw",
 					top: (position.top + deltaMoveY) + "vw",
 					transform: "rotate(" + position.rotation + "deg)",
-					width: "8vw",
-					height: "8vw",
 				}}
 				onMouseDown={(event) => this.startMoving(event)}
 			>
@@ -46,7 +42,7 @@ export default class Card extends React.Component {
 						adminView && editable
 						? (
 							<input
-								style={{ width: "100%" }}
+								style={styles.editableInput}
 								value={editedPerson.nick}
 								placeholder="nick"
 								onChange={(event) => this.setState({ editedPerson: {
@@ -62,7 +58,7 @@ export default class Card extends React.Component {
 							adminView && editable
 							? (
 								<input
-									style={{ width: "100%" }}
+									style={styles.editableInput}
 									value={editedPerson.firstName}
 									placeholder="first name"
 									onChange={(event) => this.setState({ editedPerson: {
@@ -77,7 +73,7 @@ export default class Card extends React.Component {
 							adminView && editable
 							? (
 								<input
-									style={{ width: "100%" }}
+									style={styles.editableInput}
 									value={editedPerson.lastName}
 									placeholder="last name"
 									onChange={(event) => this.setState({ editedPerson: {
@@ -94,7 +90,7 @@ export default class Card extends React.Component {
 					adminView && editable
 					? (
 						<input
-							style={{ width: "100%" }}
+							style={styles.editableInput}
 							value={editedPerson.departement}
 							placeholder="departement"
 							onChange={(event) => this.setState({ editedPerson: {
@@ -107,10 +103,7 @@ export default class Card extends React.Component {
 				}
 				<img
 					src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
-					style={{
-						width: "6vw",
-						height: "6vw",
-					}}
+					style={styles.profilePicture}
 				/>
 				{
 					adminView && editable

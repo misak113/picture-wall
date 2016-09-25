@@ -1,12 +1,13 @@
 
 import React from 'react';
 import Cards from './Cards';
+import * as styles from './BodyStyle';
 
 export default class Body extends React.Component {
 
 	render() {
 		return (
-			<div style={{ height: "300vw", width: "100%" }}>
+			<div style={styles.body}>
 				{this.props.globalState.adminView ? <button onClick={() => this.addPerson()}>+</button> : null}
 				<Cards
 					persons={this.getAllPersons()}

@@ -32,7 +32,7 @@ export default class Card extends React.Component {
 					border: "1px solid black",
 					textAlign: "center",
 					position: "absolute",
-					fontSize: "0.4em",
+					fontSize: "0.4vw",
 					left: (position.left + deltaMoveX) + "vw",
 					top: (position.top + deltaMoveY) + "vw",
 					transform: "rotate(" + position.rotation + "deg)",

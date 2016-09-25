@@ -30,6 +30,7 @@ export default class Body extends React.Component {
 			lastName: "",
 			nick: "",
 			departement: "",
+			description: "",
 			profilePicture: "",
 		};
 		this.context.dispatch({ type: "ADD_PERSON", person: newPerson });

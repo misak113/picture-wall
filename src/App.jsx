@@ -159,7 +159,10 @@ export default class App extends React.Component {
 			method: 'delete',
 			headers: this.getHeaders(),
 		})
-		.then(() => this.loadPersons())
+		.then(() => {
+			this.loadPersons();
+			this.loadPositions();
+		})
 	}
 
 	uploadImage(file) {

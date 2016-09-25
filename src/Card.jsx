@@ -203,8 +203,8 @@ export default class Card extends React.Component {
 	getPosition() {
 		return this.props.position || {
 			personId: this.props.person.id,
-			left: 0,
-			top: 0,
+			left: 3,
+			top: 3,
 			rotation: 0
 		};
 	}

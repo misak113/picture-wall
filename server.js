@@ -99,6 +99,9 @@ app.post('/admin/person/:personId', auth, (req, res) => {
 });
 app.delete('/admin/person/:personId', auth, (req, res) => {
 	const personId = parseInt(req.params.personId);
+	const currentPositions = getData('positions');
+	const positions = currentPositions.filter((position) => position.personId !== personId);
+	saveData('positions', positions);
 	const currentPersons = getData('persons');
 	const persons = currentPersons.filter((person) => person.id !== personId);
 	saveData('persons', persons);

@@ -8,7 +8,19 @@ export default class Body extends React.Component {
 	render() {
 		return (
 			<div style={styles.body}>
-				{this.props.globalState.adminView ? <button onClick={() => this.addPerson()}>+</button> : null}
+				{
+					this.props.globalState.adminView
+					? (
+						<a
+							onClick={() => this.addPerson()}
+							style={styles.addPerson}
+							className="btn-floating btn-large waves-effect waves-light red"
+						>
+							<i className="material-icons">add</i>
+						</a>
+					)
+					: null
+				}
 				<Cards
 					persons={this.getAllPersons()}
 					positions={this.props.globalState.positions}

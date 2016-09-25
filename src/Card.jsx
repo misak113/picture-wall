@@ -11,6 +11,7 @@ export default class Card extends React.Component {
 			deltaMoveX: 0,
 			deltaMoveY: 0,
 			editedPerson: {...props.person},
+			revealed: props.editable,
 		};
 	}
 
@@ -27,106 +28,176 @@ export default class Card extends React.Component {
 		const deltaMoveX = this.state.deltaMoveX;
 		const deltaMoveY = this.state.deltaMoveY;
 		const position = this.getPosition();
+		const firstName = adminView && editable
+			? (
+				<input
+					style={styles.editableInput}
+					value={editedPerson.firstName}
+					placeholder="first name"
+					onChange={(event) => this.setState({ editedPerson: {
+						...editedPerson,
+						firstName: event.target.value,
+					}})}
+				/>
+			)
+			: person.firstName;
+		const lastName = adminView && editable
+			? (
+				<input
+					style={styles.editableInput}
+					value={editedPerson.lastName}
+					placeholder="last name"
+					onChange={(event) => this.setState({ editedPerson: {
+						...editedPerson,
+						lastName: event.target.value,
+					}})}
+				/>
+			)
+			: person.lastName;
+		const nick = adminView && editable
+			? (
+				<input
+					style={styles.editableInput}
+					value={editedPerson.nick}
+					placeholder="nick"
+					onChange={(event) => this.setState({ editedPerson: {
+						...editedPerson,
+						nick: event.target.value,
+					}})}
+				/>
+			)
+			: person.nick;
+		const departement = adminView && editable
+			? (
+				<input
+					style={styles.editableInput}
+					value={editedPerson.departement}
+					placeholder="departement"
+					onChange={(event) => this.setState({ editedPerson: {
+						...editedPerson,
+						departement: event.target.value,
+					}})}
+				/>
+			)
+			: <div className="chip right">{person.departement}</div>;
+		const description = adminView && editable
+			? (
+				<textarea
+					className="materialize-textarea"
+					style={styles.editableInput}
+					value={editedPerson.description}
+					placeholder="description"
+					onChange={(event) => this.setState({ editedPerson: {
+						...editedPerson,
+						description: event.target.value,
+					}})}
+				/>
+			)
+			: person.description;
 		return (
 			<div
+				className="card"
 				style={{
 					...styles.card,
 					left: (position.left + deltaMoveX) + "vw",
 					top: (position.top + deltaMoveY) + "vw",
-					transform: "rotate(" + position.rotation + "deg)",
+					zIndex: this.state.revealed ? "10" : null,
+					transform:
+						"rotate(" + (this.state.revealed ? Math.round(Math.random() * 20) - 10 : position.rotation) + "deg) "
+						+ "scale(" + (this.state.revealed ? '1' : '0.6') + ")",
 				}}
-				onMouseDown={(event) => this.startMoving(event)}
 			>
-				<h2>
+				<div className="card-image waves-effect waves-block waves-light">
+					<img
+						onClick={() => this.toggleReveal()}
+						className="activator"
+						src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
+						style={styles.profilePicture}
+					/>
+				</div>
+				<div className="card-content">
+					<span
+						className="card-title activator grey-text text-darken-4 center"
+						onClick={() => this.toggleReveal()}
+					>
+						{firstName} {lastName}
+					</span>
+					<p>
+						{nick}
+					</p>
+				</div>
+				<div
+					className="card-reveal"
+					style={{
+						...styles.cardReveal,
+						zIndex: this.state.revealed ? null : -1,
+						opacity: this.state.revealed ? 1 : 0,
+					}}
+				>
+					<span
+						className="card-title grey-text text-darken-4 center"
+						onClick={() => this.toggleReveal()}
+					>
+						{firstName} {lastName}
+						{editable ? null : <i className="material-icons right">close</i>}
+					</span>
+					<p>
+						{nick}
+					</p>
+					{departement}
+					<p>
+						{description}
+					</p>
 					{
 						adminView && editable
-						? (
-							<input
-								style={styles.editableInput}
-								value={editedPerson.nick}
-								placeholder="nick"
-								onChange={(event) => this.setState({ editedPerson: {
-									...editedPerson,
-									nick: event.target.value,
-								}})}
-							/>
-						)
-						: person.nick
+						? <input ref="picture-input" type="file" onChange={(event) => this.uploadProfilePicture(event)}/>
+						: null
 					}
-					<small>
-						{
-							adminView && editable
-							? (
-								<input
-									style={styles.editableInput}
-									value={editedPerson.firstName}
-									placeholder="first name"
-									onChange={(event) => this.setState({ editedPerson: {
-										...editedPerson,
-										firstName: event.target.value,
-									}})}
-								/>
-							)
-							: person.firstName
-						}
-						{
-							adminView && editable
-							? (
-								<input
-									style={styles.editableInput}
-									value={editedPerson.lastName}
-									placeholder="last name"
-									onChange={(event) => this.setState({ editedPerson: {
-										...editedPerson,
-										lastName: event.target.value,
-									}})}
-								/>
-							)
-							: person.lastName
-						}
-					</small>
-				</h2>
+					{adminView && editable ? <hr/> : null}
+					{
+						adminView && editable
+						? <button className="btn" onClick={() => this.save()}>Save</button>
+						: null
+					}
+					{
+						adminView && editable
+						? <button className="btn orange darken-1" onClick={() => this.context.dispatch({ type: "CANCEL_EDIT_PERSON", personId: person.id })}>Cancel</button>
+						: null
+					}
+					{
+						adminView && !editable
+						? <button className="btn btn-small" onClick={() => this.context.dispatch({ type: "EDIT_PERSON", personId: person.id })}>Edit</button>
+						: null
+					}
+					{
+						adminView && !editable
+						? <button className="btn btn-small red darken-1" onClick={() => this.delete()}>Delete</button>
+						: null
+					}
+				</div>
 				{
-					adminView && editable
+					adminView && !this.state.revealed
 					? (
-						<input
-							style={styles.editableInput}
-							value={editedPerson.departement}
-							placeholder="departement"
-							onChange={(event) => this.setState({ editedPerson: {
-								...editedPerson,
-								departement: event.target.value,
-							}})}
-						/>
+						<i
+							onMouseDown={(event) => this.startMoving(event)}
+							className="material-icons medium grey-text"
+							style={styles.move}
+						>
+							open_with
+						</i>
 					)
-					: null
-				}
-				<img
-					src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
-					style={styles.profilePicture}
-				/>
-				{
-					adminView && editable
-					? <input ref="picture-input" type="file" onChange={(event) => this.uploadProfilePicture(event)}/>
-					: null
-				}
-				{
-					adminView && editable
-					? <button onClick={() => this.save()}>Save</button>
-					: null
-				}
-				{
-					adminView && !editable
-					? <button onClick={() => this.context.dispatch({ type: "EDIT_PERSON", personId: person.id })}>Edit</button>
-					: null
-				}
-				{
-					adminView && !editable
-					? <button onClick={() => this.context.dispatch({ type: "DELETE_PERSON", personId: person.id })}>Delete</button>
 					: null
 				}
 			</div>
 		);
+	}
+
+	toggleReveal() {
+		if (!this.props.editable) {
+			this.setState({
+				revealed: !this.state.revealed
+			});
+		}
 	}
 
 	getPosition() {
@@ -188,6 +259,12 @@ export default class Card extends React.Component {
 			type: "SAVE_PERSON",
 			person: editedPerson
 		});
+	}
+
+	delete() {
+		if (confirm('Are you ure to delete person?')) {
+			this.context.dispatch({ type: "DELETE_PERSON", personId: this.props.person.id });
+		}
 	}
 
 	uploadProfilePicture(event) {

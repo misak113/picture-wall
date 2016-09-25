@@ -1,11 +1,15 @@
 
 export const card = {
-	border: "1px solid black",
 	textAlign: "center",
 	position: "absolute",
-	fontSize: "0.4vw",
-	width: "8vw",
-	height: "8vw",
+	transition: "transform 1s ease",
+	width: "280px",
+};
+
+export const cardReveal = {
+	top: 0,
+	display: 'block',
+	transition: "opacity 1s ease",
 };
 
 export const editableInput = {
@@ -13,6 +17,14 @@ export const editableInput = {
 };
 
 export const profilePicture = {
-	width: "6vw",
-	height: "6vw",
+	width: "100%",
+	maxHeight: "400px",
+	minHeight: "200px",
+};
+
+export const move = {
+	position: "absolute",
+	top: "2px",
+	right: "2px",
+	zIndex: 5,
 };

@@ -17,13 +17,17 @@ const auth = function (req, res, next) {
 		return res.send(401);
 	};
 
-	const user = basicAuth(req);
+	const credentials = basicAuth(req);
 
-	if (!user || !user.name || !user.pass) {
+	if (!credentials || !credentials.name || !credentials.pass) {
 		return unauthorized(res);
 	};
 
-	if (user.name === 'bonami' && user.pass === 'bonamijenejlepsi') {
+	const authenticated = getData('users').filter((user) => {
+		return credentials.name === user.username && credentials.pass === user.password
+	}).length > 0;
+
+	if (authenticated) {
 		res.cookie(
 			'Authorization',
 			req.headers['authorization'].substring('Basic '.length),

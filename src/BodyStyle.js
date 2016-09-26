@@ -1,6 +1,6 @@
 
 export const body = {
-	height: "300vw",
+	height: "100vw",
 	width: "100%",
 	backgroundSize: "100%"
 };

@@ -119,7 +119,7 @@ export default class Card extends React.Component {
 					top: (position.top + deltaMoveY) + "vw",
 					zIndex: this.state.revealed || this.state.moving || this.state.hover ? 500 : zIndex,
 					transform:
-						"rotate(" + (this.state.revealed ? Math.round(Math.random() * 20) - 10 : position.rotation) + "deg) "
+						"rotate(" + (this.state.revealed ? this.state.revealedRotation : position.rotation) + "deg) "
 						+ "scale(" + this.getScale() + ")",
 				}}
 			>
@@ -228,7 +228,8 @@ export default class Card extends React.Component {
 	toggleReveal() {
 		if (!this.props.editable) {
 			this.setState({
-				revealed: !this.state.revealed
+				revealed: !this.state.revealed,
+				revealedRotation: Math.round(Math.random() * 20) - 10,
 			});
 		}
 	}

@@ -111,6 +111,8 @@ export default class Card extends React.Component {
 		return (
 			<div
 				className="card"
+				onMouseOver={() => this.setState({ hover: true })}
+				onMouseOut={() => this.setState({ hover: false })}
 				style={{
 					...styles.card,
 					left: (position.left + deltaMoveX) + "vw",
@@ -118,7 +120,7 @@ export default class Card extends React.Component {
 					zIndex: this.state.revealed || this.state.moving ? 500 : zIndex,
 					transform:
 						"rotate(" + (this.state.revealed ? Math.round(Math.random() * 20) - 10 : position.rotation) + "deg) "
-						+ "scale(" + (this.state.revealed ? '1' : '0.4') + ")",
+						+ "scale(" + this.getScale() + ")",
 				}}
 			>
 				<div className="card-image waves-effect waves-block waves-light">
@@ -210,6 +212,17 @@ export default class Card extends React.Component {
 				}
 			</div>
 		);
+	}
+
+	getScale() {
+		switch (true) {
+			case this.state.revealed:
+				return '1';
+			case this.state.hover:
+				return '0.45';
+			default:
+				return '0.4';
+		}
 	}
 
 	toggleReveal() {

@@ -5,6 +5,7 @@ const basicAuth = require('basic-auth');
 const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
+const sharp = require('sharp');
 
 const dataPath = __dirname + '/data';
 const uploadPath = __dirname + '/upload';
@@ -63,6 +64,11 @@ function computeFileHash(fileData) {
 	return md5sum.digest('hex');
 }
 
+function getExtension(fileName) {
+	const lastIndexOfDot = fileName.lastIndexOf('.');
+	return lastIndexOfDot !== -1 ? fileName.substring(lastIndexOfDot) : '';
+}
+
 const upload = multer({ dest: __dirname + '/tmp' });
 
 app.use(bodyParser.json());
@@ -115,8 +121,7 @@ app.post('/admin/picture', auth, upload.single('file'), (req, res) => {
 		if (error) {
 			throw error;
 		}
-		const lastIndexOfDot = file.originalname.lastIndexOf('.');
-		const extension = lastIndexOfDot !== -1 ? file.originalname.substring(lastIndexOfDot) : '';
+		const extension = getExtension(file.originalname);
 		const fileHash = computeFileHash(data);
 		const uploadFileName = fileHash + extension;
 		const uploadFilePath = uploadPath + '/picture/' + uploadFileName;
@@ -128,6 +133,27 @@ app.post('/admin/picture', auth, upload.single('file'), (req, res) => {
 				fileName: uploadFileName
 			});
 		});
+	});
+});
+app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, (req, res) => {
+	const width = parseInt(req.params[0]);
+	const height = parseInt(req.params[1]);
+	const fileName = req.params[2];
+	const extension = getExtension(fileName);
+	const sourceFilePath = uploadPath + '/picture/' + fileName;
+	const filePath = uploadPath + '/picture/resized/' + width + 'x' + height + '_' + fileName;
+	res.header('Content-Type', 'image/' + extension.substring(1));
+	sharp(sourceFilePath)
+	.resize(width, height)
+	.toFile(filePath, (error) => {
+		if (error) {
+			res
+			.status(500)
+			.send(fs.readFileSync(sourceFilePath));
+		} else {
+			res
+			.send(fs.readFileSync(filePath));
+		}
 	});
 });
 app.get('/settings', (req, res) => {

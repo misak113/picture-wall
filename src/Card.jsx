@@ -127,7 +127,7 @@ export default class Card extends React.Component {
 					<img
 						onClick={() => this.toggleReveal()}
 						className="activator"
-						src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
+						src={"/picture/resized/300x300_" + (editedPerson.profilePicture || person.profilePicture)}
 						style={styles.profilePicture}
 					/>
 					<div style={styles.titleDepartement}>
@@ -176,7 +176,7 @@ export default class Card extends React.Component {
 						: null
 					}
 					<img
-						src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
+						src={"/picture/resized/400x400_" + (editedPerson.profilePicture || person.profilePicture)}
 						style={styles.profilePicture}
 					/>
 					{adminView && editable ? <hr/> : null}

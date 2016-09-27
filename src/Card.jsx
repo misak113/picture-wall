@@ -59,7 +59,7 @@ export default class Card extends React.Component {
 				<input
 					style={styles.editableInput}
 					value={editedPerson.email}
-					placeholder="last name"
+					placeholder="email"
 					onChange={(event) => this.setState({ editedPerson: {
 						...editedPerson,
 						email: event.target.value,

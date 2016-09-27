@@ -5,7 +5,7 @@ const basicAuth = require('basic-auth');
 const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
-const lwip = require('lwip');
+const images = require('images');
 
 const dataPath = __dirname + '/data';
 const uploadPath = __dirname + '/upload';
@@ -148,23 +148,32 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, (req, res) => {
 		.status(500)
 		.send(fs.readFileSync(sourceFilePath));
 	};
-	lwip.open(sourceFilePath, (error, image) => {
+	const sourceImage = images(sourceFilePath)
+	const sourceWidth = sourceImage.width();
+	const sourceHeight = sourceImage.height();
+	let targetWidth, targetHeight;
+	if (sourceWidth / sourceHeight < width / height) {
+		targetWidth = width;
+		targetHeight = parseInt(width * sourceHeight / sourceWidth);
+	} else {
+		targetWidth = parseInt(height * sourceWidth / sourceHeight);
+		targetHeight = height;
+	}
+	sourceImage.resize(targetWidth, targetHeight);
+	const destImage = images(
+		sourceImage,
+		targetWidth > width ? parseInt((targetWidth - width) / 2) : 0,
+		targetHeight > height ? parseInt((targetHeight - height) / 2) : 0,
+		width,
+		height
+	);
+	destImage
+	.saveAsync(filePath, (error) => {
 		if (error) {
-			renderErrorImage();
+			console.error(error);
+			res.status(500).send(fs.readFileSync(sourceFilePath));
 		} else {
-			const sourceWidth = image.width();
-			const sourceHeight = image.height();
-			image.batch()
-			.scale(width < height ? height / sourceHeight : width / sourceWidth)
-			.crop(width, height)
-			.writeFile(filePath, (error) => {
-				if (error) {
-					renderErrorImage();
-				} else {
-					res
-					.send(fs.readFileSync(filePath));
-				}
-			});
+			res.send(fs.readFileSync(filePath));
 		}
 	});
 });

@@ -7,7 +7,7 @@
     "basic-auth": "^1.0.4",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "lwip": "0.0.9",
+    "images": "^3.0.0",
     "multer": "^1.2.0"
   },
   "devDependencies": {

@@ -28,6 +28,7 @@ export default class Card extends React.Component {
 		const deltaMoveX = this.state.deltaMoveX;
 		const deltaMoveY = this.state.deltaMoveY;
 		const position = this.getPosition();
+		const zIndex = this.props.zIndex;
 		const firstName = adminView && editable
 			? (
 				<input
@@ -114,7 +115,7 @@ export default class Card extends React.Component {
 					...styles.card,
 					left: (position.left + deltaMoveX) + "vw",
 					top: (position.top + deltaMoveY) + "vw",
-					zIndex: this.state.revealed ? "10" : null,
+					zIndex: this.state.revealed || this.state.moving ? 500 : zIndex,
 					transform:
 						"rotate(" + (this.state.revealed ? Math.round(Math.random() * 20) - 10 : position.rotation) + "deg) "
 						+ "scale(" + (this.state.revealed ? '1' : '0.4') + ")",

@@ -128,6 +128,9 @@ export default class Card extends React.Component {
 						src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
 						style={styles.profilePicture}
 					/>
+					<div style={styles.titleDepartement}>
+						{departement}
+					</div>
 				</div>
 				<div className="card-content">
 					<span

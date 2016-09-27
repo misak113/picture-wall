@@ -28,3 +28,9 @@ export const move = {
 	right: "2px",
 	zIndex: 5,
 };
+
+export const titleDepartement = {
+	position: "absolute",
+	right: "2px",
+	bottom: "2px",
+};

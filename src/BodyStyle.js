@@ -7,4 +7,6 @@ export const body = {
 
 export const addPerson = {
 	position: "fixed",
+	left: "3px",
+	top: "3px",
 };

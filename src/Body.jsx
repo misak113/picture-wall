@@ -52,6 +52,7 @@ export default class Body extends React.Component {
 			id: this.getNextPersonId(),
 			firstName: "",
 			lastName: "",
+			email: "",
 			nick: "",
 			departement: "",
 			description: "",

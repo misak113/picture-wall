@@ -175,6 +175,10 @@ export default class Card extends React.Component {
 						? <input ref="picture-input" type="file" onChange={(event) => this.uploadProfilePicture(event)}/>
 						: null
 					}
+					<img
+						src={"picture/" + (editedPerson.profilePicture || person.profilePicture)}
+						style={styles.profilePicture}
+					/>
 					{adminView && editable ? <hr/> : null}
 					{
 						adminView && editable

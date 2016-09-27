@@ -40,25 +40,24 @@ export default class App extends React.Component {
 			case "SAVE_PERSON_POSITION":
 				const positions = globalState.positions.filter((position) => position.personId !== action.position.personId);
 				positions.push(action.position);
-				this.setState({
-					globalState: {
-						...globalState,
-						positions,
-					}
+				this.postPositions(positions)
+				.then((response) => {
+					action.done();
+					this.loadPositions();
 				});
-				this.postPositions(positions);
 				break;
 
 			case "SAVE_PERSON":
 				const savePerson = action.person;
-				this.setState({
+				this.postPerson(savePerson)
+				.then(() => this.setState({
 					globalState: {
 						...globalState,
 						newPersons: globalState.newPersons.filter((person) => person.id !== savePerson.id),
 						editablePersonIds: globalState.editablePersonIds.filter((personId) => personId !== savePerson.id),
 					}
-				});
-				this.postPerson(savePerson);
+				}))
+				.then(() => this.loadPersons());
 				break;
 
 			case "ADD_PERSON":
@@ -91,7 +90,11 @@ export default class App extends React.Component {
 				break;
 
 			case "DELETE_PERSON":
-				this.deletePerson(action.personId);
+				this.deletePerson(action.personId)
+				.then(() => {
+					this.loadPersons();
+					this.loadPositions();
+				});
 				break;
 
 			case "UPLOAD_IMAGE":
@@ -102,17 +105,18 @@ export default class App extends React.Component {
 				break;
 
 			case "SAVE_SETTINGS":
-				this.postSettings(action.settings);
+				this.postSettings(action.settings)
+				.then(() => this.loadSettings());
 				break;
 		}
 	}
 
 	loadPositions() {
-		fetch('/positions', {
+		return fetch('/positions', {
 			headers: this.getHeaders(),
 		})
-		.then((response) => response.json())
-		.then((positions) => this.setState({
+		.then((response) => response.json(), (e) => alert('Error happened during loading'))
+		.then((positions) => positions && this.setState({
 			globalState: {
 				...this.state.globalState,
 				positions,
@@ -121,7 +125,7 @@ export default class App extends React.Component {
 	}
 
 	postPositions(positions) {
-		fetch('/admin/positions', {
+		return fetch('/admin/positions', {
 			method: 'post',
 			headers: {
 				...this.getHeaders(),
@@ -130,15 +134,15 @@ export default class App extends React.Component {
 			},
 			body: JSON.stringify(positions),
 		})
-		.then(() => this.loadPositions())
+		.then(() => true, (e) => alert('Error happened during saving'));
 	}
 
 	loadPersons() {
-		fetch('/persons', {
+		return fetch('/persons', {
 			headers: this.getHeaders(),
 		})
-		.then((response) => response.json())
-		.then((persons) => this.setState({
+		.then((response) => response.json(), (e) => alert('Error happened during loading'))
+		.then((persons) => persons && this.setState({
 			globalState: {
 				...this.state.globalState,
 				persons,
@@ -147,7 +151,7 @@ export default class App extends React.Component {
 	}
 
 	postPerson(person) {
-		fetch('/admin/person/' + person.id, {
+		return fetch('/admin/person/' + person.id, {
 			method: 'post',
 			headers: {
 				...this.getHeaders(),
@@ -156,18 +160,15 @@ export default class App extends React.Component {
 			},
 			body: JSON.stringify(person),
 		})
-		.then(() => this.loadPersons())
+		.then(() => true, (e) => alert('Error happened during saving'));
 	}
 
 	deletePerson(personId) {
-		fetch('/admin/person/' + personId, {
+		return fetch('/admin/person/' + personId, {
 			method: 'delete',
 			headers: this.getHeaders(),
 		})
-		.then(() => {
-			this.loadPersons();
-			this.loadPositions();
-		})
+		.then(() => true, (e) => alert('Error happened during deleting'));
 	}
 
 	uploadImage(file) {
@@ -178,15 +179,15 @@ export default class App extends React.Component {
 			headers: this.getHeaders(),
 			body: data,
 		})
-		.then((response) => response.json());
+		.then((response) => response.json(), (e) => alert('Error happened during uploading'));
 	}
 
 	loadSettings() {
-		fetch('/settings', {
+		return fetch('/settings', {
 			headers: this.getHeaders(),
 		})
-		.then((response) => response.json())
-		.then((settings) => this.setState({
+		.then((response) => response.json(), (e) => alert('Error happened during loading'))
+		.then((settings) => settings && this.setState({
 			globalState: {
 				...this.state.globalState,
 				settings,
@@ -195,7 +196,7 @@ export default class App extends React.Component {
 	}
 
 	postSettings(settings) {
-		fetch('/admin/settings', {
+		return fetch('/admin/settings', {
 			method: 'post',
 			headers: {
 				...this.getHeaders(),
@@ -204,7 +205,7 @@ export default class App extends React.Component {
 			},
 			body: JSON.stringify(settings),
 		})
-		.then(() => this.loadSettings())
+		.then(() => true, (e) => alert('Error happened during saving'));
 	}
 
 	getHeaders() {

@@ -240,18 +240,23 @@ export default class Card extends React.Component {
 	stopMoving() {
 		if (this.state.moving) {
 			const position = this.getPosition();
-			this.context.dispatch({ type: "SAVE_PERSON_POSITION", position: {
-				personId: this.props.person.id,
-				left: Math.round(position.left + this.state.deltaMoveX),
-				top: Math.round(position.top + this.state.deltaMoveY),
-				rotation: Math.round(Math.random() * 40) - 20
-			}});
-			this.setState({
-				moving: false,
-				deltaMoveX: 0,
-				deltaMoveY: 0,
-				lastMoveX: 0,
-				lastMoveY: 0,
+			this.context.dispatch({
+				type: "SAVE_PERSON_POSITION",
+				position: {
+					personId: this.props.person.id,
+					left: Math.round(position.left + this.state.deltaMoveX),
+					top: Math.round(position.top + this.state.deltaMoveY),
+					rotation: Math.round(Math.random() * 40) - 20
+				},
+				done: () => {
+					this.setState({
+						moving: false,
+						deltaMoveX: 0,
+						deltaMoveY: 0,
+						lastMoveX: 0,
+						lastMoveY: 0,
+					});
+				}
 			});
 		}
 	}

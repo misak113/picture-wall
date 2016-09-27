@@ -5,7 +5,7 @@ const basicAuth = require('basic-auth');
 const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
-const sharp = require('sharp');
+const lwip = require('lwip');
 
 const dataPath = __dirname + '/data';
 const uploadPath = __dirname + '/upload';
@@ -143,16 +143,28 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, (req, res) => {
 	const sourceFilePath = uploadPath + '/picture/' + fileName;
 	const filePath = uploadPath + '/picture/resized/' + width + 'x' + height + '_' + fileName;
 	res.header('Content-Type', 'image/' + extension.substring(1));
-	sharp(sourceFilePath)
-	.resize(width, height)
-	.toFile(filePath, (error) => {
+	const renderErrorImage = () => {
+		res
+		.status(500)
+		.send(fs.readFileSync(sourceFilePath));
+	};
+	lwip.open(sourceFilePath, (error, image) => {
 		if (error) {
-			res
-			.status(500)
-			.send(fs.readFileSync(sourceFilePath));
+			renderErrorImage();
 		} else {
-			res
-			.send(fs.readFileSync(filePath));
+			const sourceWidth = image.width();
+			const sourceHeight = image.height();
+			image.batch()
+			.scale(width < height ? height / sourceHeight : width / sourceWidth)
+			.crop(width, height)
+			.writeFile(filePath, (error) => {
+				if (error) {
+					renderErrorImage();
+				} else {
+					res
+					.send(fs.readFileSync(filePath));
+				}
+			});
 		}
 	});
 });

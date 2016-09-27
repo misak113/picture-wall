@@ -219,7 +219,7 @@ export default class Card extends React.Component {
 			case this.state.revealed:
 				return '1';
 			case this.state.hover:
-				return '0.45';
+				return '0.5';
 			default:
 				return '0.4';
 		}

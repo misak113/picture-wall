@@ -23,6 +23,7 @@ export default class Card extends React.Component {
 	render() {
 		const adminView = this.props.adminView;
 		const editable = this.props.editable;
+		const highlighted = this.props.highlighted || editable;
 		const person = this.props.person;
 		const editedPerson = this.state.editedPerson;
 		const deltaMoveX = this.state.deltaMoveX;
@@ -130,10 +131,15 @@ export default class Card extends React.Component {
 					...styles.card,
 					left: (position.left + deltaMoveX) + "vw",
 					top: (position.top + deltaMoveY) + "vw",
-					zIndex: Math.max(1, this.state.revealed || this.state.moving || this.state.hover ? 500 : zIndex),
+					zIndex: Math.max(
+						1,
+						(this.state.revealed || this.state.moving || this.state.hover ? 500 : zIndex)
+						+ (highlighted ? 400 : 0)
+					),
 					transform:
 						"rotate(" + (this.state.revealed ? this.state.revealedRotation : position.rotation) + "deg) "
 						+ "scale(" + this.getScale() + ")",
+					opacity: highlighted ? '1' : '0.4',
 				}}
 			>
 				<div className="card-image waves-effect waves-block waves-light">

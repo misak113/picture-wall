@@ -6,6 +6,10 @@ import * as styles from './BodyStyle';
 
 export default class Body extends React.Component {
 
+	componentDidMount() {
+		this.searchInput.focus();
+	}
+
 	render() {
 		const settings = this.props.globalState.settings || {};
 		return (
@@ -13,6 +17,16 @@ export default class Body extends React.Component {
 				...styles.body,
 				backgroundImage: "url('picture/" + settings.background + "')",
 			}}>
+				<div className="input-field card" style={styles.searchWrapper}>
+					<input
+						id="search"
+						style={styles.searchInput}
+						type="text"
+						placeholder="search"
+						onChange={(event) => this.typeSearch(event.target.value)} ref={(searchInput) => this.searchInput = searchInput}
+					/>
+					<i className="material-icons" style={styles.searchIcon}>search</i>
+				</div>
 				{
 					this.props.globalState.adminView
 					? (
@@ -37,6 +51,7 @@ export default class Body extends React.Component {
 					persons={this.getAllPersons()}
 					positions={this.props.globalState.positions}
 					editablePersonIds={this.props.globalState.editablePersonIds}
+					highlightedPersonIds={this.props.globalState.highlightedPersonIds}
 					adminView={this.props.globalState.adminView}
 				/>
 			</div>
@@ -81,6 +96,13 @@ export default class Body extends React.Component {
 				});
 			},
 		})
+	}
+
+	typeSearch(searchValue) {
+		this.context.dispatch({
+			type: "SEARCH",
+			searchValue,
+		});
 	}
 }
 Body.contextTypes = {

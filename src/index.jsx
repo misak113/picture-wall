@@ -8,6 +8,7 @@ const initialState = {
 	positions: [],
 	newPersons: [],
 	editablePersonIds: [],
+	highlightedPersonIds: [],
 };
 
 ReactDOM.render(<App initialState={initialState}/>, document.getElementById('body'));

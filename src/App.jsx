@@ -108,6 +108,10 @@ export default class App extends React.Component {
 				this.postSettings(action.settings)
 				.then(() => this.loadSettings());
 				break;
+
+			case "SEARCH":
+				this.applySearch(action.searchValue);
+				break;
 		}
 	}
 
@@ -146,6 +150,7 @@ export default class App extends React.Component {
 			globalState: {
 				...this.state.globalState,
 				persons,
+				highlightedPersonIds: this.filterPersonsMapIds(persons, ''),
 			}
 		}));
 	}
@@ -227,6 +232,25 @@ export default class App extends React.Component {
 			 ...object,
 			 [decodeURIComponent(parts[0])]: decodeURIComponent(parts[1]),
 		}), {});
+	}
+
+	applySearch(searchValue) {
+		this.setState({
+			globalState: {
+				...this.state.globalState,
+				highlightedPersonIds: this.filterPersonsMapIds(this.state.globalState.persons, searchValue),
+			}
+		});
+	}
+
+	filterPersonsMapIds(persons, searchValue) {
+		const searchInKeys = ['lastName', 'firstName', 'email', 'nick'];
+		return persons
+			.filter((person) => searchInKeys.reduce(
+				(found, key) => found || (person[key] && person[key].toLowerCase().indexOf(searchValue.toLowerCase()) !== -1),
+				false
+			))
+			.map((person) => person.id);
 	}
 }
 App.childContextTypes = {

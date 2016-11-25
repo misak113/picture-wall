@@ -117,7 +117,7 @@ export default class Card extends React.Component {
 					...styles.card,
 					left: (position.left + deltaMoveX) + "vw",
 					top: (position.top + deltaMoveY) + "vw",
-					zIndex: this.state.revealed || this.state.moving || this.state.hover ? 500 : zIndex,
+					zIndex: Math.max(1, this.state.revealed || this.state.moving || this.state.hover ? 500 : zIndex),
 					transform:
 						"rotate(" + (this.state.revealed ? this.state.revealedRotation : position.rotation) + "deg) "
 						+ "scale(" + this.getScale() + ")",

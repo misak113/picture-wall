@@ -244,7 +244,7 @@ export default class App extends React.Component {
 	}
 
 	filterPersonsMapIds(persons, searchValue) {
-		const searchInKeys = ['lastName', 'firstName', 'email', 'nick'];
+		const searchInKeys = ['lastName', 'firstName', 'email', 'nick', 'departement'];
 		return persons
 			.filter((person) => searchInKeys.reduce(
 				(found, key) => found || (person[key] && person[key].toLowerCase().indexOf(searchValue.toLowerCase()) !== -1),

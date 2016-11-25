@@ -53,6 +53,7 @@ export default class Body extends React.Component {
 			firstName: "",
 			lastName: "",
 			email: "",
+			phoneNumber: "",
 			nick: "",
 			departement: "",
 			description: "",

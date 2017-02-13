@@ -32,9 +32,13 @@
     "type": "git",
     "url": "git+https://github.com/misak113/picture-wall.git"
   },
-  "publishConfig":{
+  "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
+  "engines": {
+    "node": ">=7.4.0"
+  },
+  "engine-strict": true,
   "author": "misak113",
   "license": "ISC",
   "bugs": {

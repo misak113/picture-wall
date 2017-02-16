@@ -8,7 +8,7 @@
     "args": ["./upload"]
   },
   "imageResizeDriver": {
-    "module": "./lib/ImageResize/ImagesDriver",
+    "module": "./lib/ImageResize/LwipDriver",
     "args": []
   }
 }

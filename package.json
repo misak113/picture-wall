@@ -29,6 +29,7 @@
     "build": "node ./node_modules/webpack/bin/webpack",
     "develop": "node ./node_modules/webpack/bin/webpack --watch",
     "prepublish": "npm run build",
+    "install": "mkdir -p upload/picture/resized",
     "start": "node --harmony server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

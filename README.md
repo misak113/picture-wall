@@ -21,3 +21,28 @@ You can start server with --config argument where can be specified implementatio
 }
 ```
 
+Interfaces of replacable implementations are (in TS notation):
+
+## DataDriver
+```
+interface DataDriver {
+	getData(type: string, defaultValue: any = []): Promise<any>;
+	saveData(type: string, data: any): Promise<void>;
+}
+```
+
+## FileDriver
+```
+interface FileDriver {
+        getFile(path: string): Promise<string>;
+        saveFile(type: string, data: string): Promise<void>;
+}
+
+```
+
+## ImageResizeDriver
+```
+interface ImageResizeDriver {
+	resize(sourcePath: string, targetPath: string, options: { width: number; height: number; }): Promise<void>;
+}
+```

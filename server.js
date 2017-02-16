@@ -5,16 +5,19 @@ const basicAuth = require('basic-auth');
 const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
-const images = require('images');
+
+const uploadPath = __dirname + '/upload';
 
 const configPath = process.argv[2] === '--config' ? process.argv[3] : __dirname + '/config.json';
 const config = require(configPath);
 
 const DataDriver = require(config.dataDriver.module);
 const FileDriver = require(config.fileDriver.module);
+const ImageResizeDriver = require(config.imageResizeDriver.module);
 
 const dataDriver = new DataDriver(...config.dataDriver.args);
 const fileDriver = new FileDriver(...config.fileDriver.args);
+const imageResizeDriver = new ImageResizeDriver(...config.imageResizeDriver.args);
 
 const app = express();
 
@@ -120,42 +123,30 @@ app.post('/admin/picture', auth, upload.single('file'), (req, res) => {
 		});
 	});
 });
-app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, (req, res) => {
+app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, async function (req, res) {
 	const width = parseInt(req.params[0]);
 	const height = parseInt(req.params[1]);
 	const fileName = req.params[2];
 	const extension = getExtension(fileName);
 	const sourceFilePath = '/picture/' + fileName;
-	const filePath = '/picture/resized/' + width + 'x' + height + '_' + fileName;
+	const resizedFilePath = '/picture/resized/' + width + 'x' + height + '_' + fileName;
 	res.header('Content-Type', 'image/' + extension.substring(1));
-	const sourceImage = images(sourceFilePath)
-	const sourceWidth = sourceImage.width();
-	const sourceHeight = sourceImage.height();
-	let targetWidth, targetHeight;
-	if (sourceWidth / sourceHeight < width / height) {
-		targetWidth = width;
-		targetHeight = parseInt(width * sourceHeight / sourceWidth);
-	} else {
-		targetWidth = parseInt(height * sourceWidth / sourceHeight);
-		targetHeight = height;
-	}
-	sourceImage.resize(targetWidth, targetHeight);
-	const destImage = images(
-		sourceImage,
-		targetWidth > width ? parseInt((targetWidth - width) / 2) : 0,
-		targetHeight > height ? parseInt((targetHeight - height) / 2) : 0,
-		width,
-		height
-	);
-	destImage
-	.saveAsync(filePath, (error) => {
-		if (error) {
-			console.error(error);
-			fileDriver.getFile(sourceFilePath).then((data) => res.status(500).send(data));
-		} else {
-			fileDriver.getFile(filePath).then((data) => res.send(data));
+	try {
+		const resizedImageData = await fileDriver.getFile(resizedFilePath);
+		fs.writeFileSync(uploadPath + resizedFilePath, resizedImageData); // Do cache on local FS
+		res.send(resizedImageData);
+	} catch (error) {
+		const sourceImageData = await fileDriver.getFile(sourceFilePath);
+		fs.writeFileSync(uploadPath + sourceFilePath, sourceImageData); // Do cache on local FS
+		try {
+			await imageResizeDriver.resize(uploadPath + sourceFilePath, uploadPath + resizedFilePath, { width, height });
+			const resizedImageData = fs.readFileSync(uploadPath + resizedFilePath);
+			await fileDriver.saveFile(resizedFilePath, resizedImageData);
+			res.send(resizedImageData);
+		} catch (error) {
+			res.status(500).send(sourceImageData);
 		}
-	});
+	}
 });
 app.get('/settings', async function (req, res) {
 	res.send(await dataDriver.getData('settings', {}));

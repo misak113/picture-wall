@@ -6,5 +6,9 @@
   "fileDriver": {
     "module": "./lib/FSFileDriver",
     "args": ["./upload"]
+  },
+  "imageResizeDriver": {
+    "module": "./lib/ImageResize/ImagesDriver",
+    "args": []
   }
 }

@@ -1,0 +1,14 @@
+{
+  "dataDriver": {
+    "module": "./lib/FSDataDriver",
+    "args": ["./data"]
+  },
+  "fileDriver": {
+    "module": "./lib/FSFileDriver",
+    "args": ["./upload"]
+  },
+  "imageResizeDriver": {
+    "module": "./lib/ImageResize/LwipDriver",
+    "args": []
+  }
+}

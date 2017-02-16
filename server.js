@@ -6,6 +6,8 @@ const fs = require('fs');
 const crypto = require('crypto');
 const multer = require('multer');
 
+const publicPath = __dirname + '/public';
+const distPath = __dirname + '/dist';
 const uploadPath = __dirname + '/upload';
 
 const configPath = process.argv[2] === '--config' ? process.argv[3] : __dirname + '/config.json';
@@ -64,13 +66,13 @@ function getExtension(fileName) {
 const upload = multer({ dest: __dirname + '/tmp' });
 
 app.use(bodyParser.json());
-app.use(express.static('public'));
-app.use(express.static('dist'));
-app.use(express.static('upload'));
+app.use(express.static(publicPath));
+app.use(express.static(distPath));
+app.use(express.static(uploadPath));
 app.use('/admin', auth);
-app.use('/admin', auth, express.static('public'));
-app.use('/admin', auth, express.static('dist'));
-app.use('/admin', auth, express.static('upload'));
+app.use('/admin', auth, express.static(publicPath));
+app.use('/admin', auth, express.static(distPath));
+app.use('/admin', auth, express.static(uploadPath));
 
 app.get('/positions', async function (req, res) {
 	res.send(await dataDriver.getData('positions'));

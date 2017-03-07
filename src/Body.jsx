@@ -70,6 +70,7 @@ export default class Body extends React.Component {
 			email: "",
 			phoneNumber: "",
 			nick: "",
+			birthday: "",
 			departement: "",
 			description: "",
 			profilePicture: "",

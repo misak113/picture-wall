@@ -69,6 +69,19 @@ export default class Card extends React.Component {
 				/>
 			)
 			: person.email;
+		const birthday = adminView && editable
+			? (
+				<input
+					style={styles.editableInput}
+					value={editedPerson.birthday}
+					placeholder="birthday"
+					onChange={(event) => this.setState({ editedPerson: {
+						...editedPerson,
+						birthday: event.target.value,
+					}})}
+				/>
+			)
+			: person.birthday;
 		const phoneNumber = adminView && editable
 			? (
 				<input
@@ -182,6 +195,11 @@ export default class Card extends React.Component {
 					<p>
 						{email}
 					</p>
+					{birthday ? (
+						<p>
+							<small>*&nbsp;{birthday}</small>
+						</p>
+					) : null}
 					<p>
 						{phoneNumber}
 					</p>

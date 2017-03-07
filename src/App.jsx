@@ -1,6 +1,8 @@
 
 import React from 'react';
 import Body from './Body';
+import Fetch from 'fetch-ponyfill';
+const { fetch } = Fetch();
 
 export default class App extends React.Component {
 
@@ -118,6 +120,7 @@ export default class App extends React.Component {
 	loadPositions() {
 		return fetch('/positions', {
 			headers: this.getHeaders(),
+			credentials: 'include'
 		})
 		.then((response) => response.json(), (e) => alert('Error happened during loading'))
 		.then((positions) => positions && this.setState({
@@ -137,6 +140,7 @@ export default class App extends React.Component {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(positions),
+			credentials: 'include'
 		})
 		.then(() => true, (e) => alert('Error happened during saving'));
 	}
@@ -144,6 +148,7 @@ export default class App extends React.Component {
 	loadPersons() {
 		return fetch('/persons', {
 			headers: this.getHeaders(),
+			credentials: 'include'
 		})
 		.then((response) => response.json(), (e) => alert('Error happened during loading'))
 		.then((persons) => persons && this.setState({
@@ -164,6 +169,7 @@ export default class App extends React.Component {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(person),
+			credentials: 'include'
 		})
 		.then(() => true, (e) => alert('Error happened during saving'));
 	}
@@ -172,6 +178,7 @@ export default class App extends React.Component {
 		return fetch('/admin/person/' + personId, {
 			method: 'delete',
 			headers: this.getHeaders(),
+			credentials: 'include'
 		})
 		.then(() => true, (e) => alert('Error happened during deleting'));
 	}
@@ -183,6 +190,7 @@ export default class App extends React.Component {
 			method: 'post',
 			headers: this.getHeaders(),
 			body: data,
+			credentials: 'include'
 		})
 		.then((response) => response.json(), (e) => alert('Error happened during uploading'));
 	}
@@ -190,6 +198,7 @@ export default class App extends React.Component {
 	loadSettings() {
 		return fetch('/settings', {
 			headers: this.getHeaders(),
+			credentials: 'include'
 		})
 		.then((response) => response.json(), (e) => alert('Error happened during loading'))
 		.then((settings) => settings && this.setState({
@@ -209,6 +218,7 @@ export default class App extends React.Component {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify(settings),
+			credentials: 'include'
 		})
 		.then(() => true, (e) => alert('Error happened during saving'));
 	}

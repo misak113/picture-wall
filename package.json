@@ -22,6 +22,7 @@
     "webpack": "^1.13.2"
   },
   "peerDependencies": {
+    "googleapis": "^22.2.0",
     "images": "^3.0.0",
     "lwip": "0.0.9",
     "sharp": "^0.16.0"

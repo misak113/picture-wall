@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const basicAuth = require('basic-auth');
 const fs = require('fs');
+const os = require('os');
 const crypto = require('crypto');
 const multer = require('multer');
 
@@ -63,7 +64,7 @@ function getExtension(fileName) {
 	return lastIndexOfDot !== -1 ? fileName.substring(lastIndexOfDot) : '';
 }
 
-const upload = multer({ dest: __dirname + '/tmp' });
+const upload = multer({ dest: os.tmpdir() });
 
 app.use(bodyParser.json());
 app.use(express.static(publicPath));

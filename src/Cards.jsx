@@ -19,6 +19,7 @@ export default class Cards extends React.Component {
 							editable={this.props.editablePersonIds.indexOf(person.id) !== -1}
 							highlighted={this.props.highlightedPersonIds.indexOf(person.id) !== -1}
 							adminView={this.props.adminView}
+							saving={this.props.saving}
 							zIndex={zIndex}
 						/>
 					);

@@ -21,6 +21,7 @@ export default class Card extends React.Component {
 	}
 
 	render() {
+		const saving = this.props.saving;
 		const adminView = this.props.adminView;
 		const editable = this.props.editable;
 		const highlighted = this.props.highlighted || editable;
@@ -222,12 +223,12 @@ export default class Card extends React.Component {
 					{adminView && editable ? <hr/> : null}
 					{
 						adminView && editable
-						? <button className="btn" onClick={() => this.save()}>Save</button>
+						? <button className="btn" onClick={() => this.save()} disabled={saving}>Save</button>
 						: null
 					}
 					{
 						adminView && editable
-						? <button className="btn orange darken-1" onClick={() => this.context.dispatch({ type: "CANCEL_EDIT_PERSON", personId: person.id })}>Cancel</button>
+						? <button className="btn orange darken-1" onClick={() => this.context.dispatch({ type: "CANCEL_EDIT_PERSON", personId: person.id })} disabled={saving}>Cancel</button>
 						: null
 					}
 					{

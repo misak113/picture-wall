@@ -50,11 +50,13 @@ export default class App extends React.Component {
 				break;
 
 			case "SAVE_PERSON":
+				this.setState({ globalState: { ...globalState, saving: true }});
 				const savePerson = action.person;
 				this.postPerson(savePerson)
 				.then(() => this.setState({
 					globalState: {
 						...globalState,
+						saving: false,
 						newPersons: globalState.newPersons.filter((person) => person.id !== savePerson.id),
 						editablePersonIds: globalState.editablePersonIds.filter((personId) => personId !== savePerson.id),
 					}

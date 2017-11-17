@@ -53,6 +53,7 @@ export default class Body extends React.Component {
 					editablePersonIds={this.props.globalState.editablePersonIds}
 					highlightedPersonIds={this.props.globalState.highlightedPersonIds}
 					adminView={this.props.globalState.adminView}
+					saving={this.props.globalState.saving}
 				/>
 			</div>
 		);

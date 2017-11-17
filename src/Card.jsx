@@ -302,6 +302,9 @@ export default class Card extends React.Component {
 	stopMoving() {
 		if (this.state.moving) {
 			const position = this.getPosition();
+			this.setState({
+				moving: false,
+			});
 			this.context.dispatch({
 				type: "SAVE_PERSON_POSITION",
 				position: {

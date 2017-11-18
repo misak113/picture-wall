@@ -151,12 +151,12 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, async function (req, res) {
 	try {
 		const resizedImageData = await fileDriver.getFile(resizedFilePath);
 		await ensureDirectory(path.dirname(cachePath + resizedFilePath));
-		fs.writeFileSync(cachePath + resizedFilePath, resizedImageData); // Do cache on local FS
+		fs.writeFileSync(cachePath + resizedFilePath, resizedImageData, { encoding: 'binary' }); // Do cache on local FS
 		res.send(resizedImageData);
 	} catch (error) {
 		const sourceImageData = await fileDriver.getFile(sourceFilePath);
 		await ensureDirectory(path.dirname(cachePath + sourceFilePath));
-		fs.writeFileSync(cachePath + sourceFilePath, sourceImageData); // Do cache on local FS
+		fs.writeFileSync(cachePath + sourceFilePath, sourceImageData, { encoding: 'binary' }); // Do cache on local FS
 		try {
 			await imageResizeDriver.resize(cachePath + sourceFilePath, cachePath + resizedFilePath, { width, height });
 			const resizedImageData = fs.readFileSync(cachePath + resizedFilePath);

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const basicAuth = require('basic-auth');
 const fs = require('fs');
 const os = require('os');
+const path = require('path');
 const crypto = require('crypto');
 const multer = require('multer');
 
@@ -66,6 +67,13 @@ function computeFileHash(fileData) {
 function getExtension(fileName) {
 	const lastIndexOfDot = fileName.lastIndexOf('.');
 	return lastIndexOfDot !== -1 ? fileName.substring(lastIndexOfDot) : '';
+}
+
+async function ensureDirectory(path) {
+	const exists = await new Promise((resolve) => fs.exists(path, (exists) => resolve(exists)));
+	if (!exists) {
+		await new Promise((resolve, reject) => fs.mkdir(path, (error) => error ? reject(error) : resolve()));
+	}
 }
 
 const upload = multer({ dest: os.tmpdir() });
@@ -140,10 +148,12 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, async function (req, res) {
 	res.header('Content-Type', 'image/' + extension.substring(1));
 	try {
 		const resizedImageData = await fileDriver.getFile(resizedFilePath);
+		await ensureDirectory(path.dirname(cachePath + resizedFilePath));
 		fs.writeFileSync(cachePath + resizedFilePath, resizedImageData); // Do cache on local FS
 		res.send(resizedImageData);
 	} catch (error) {
 		const sourceImageData = await fileDriver.getFile(sourceFilePath);
+		await ensureDirectory(path.dirname(cachePath + sourceFilePath));
 		fs.writeFileSync(cachePath + sourceFilePath, sourceImageData); // Do cache on local FS
 		try {
 			await imageResizeDriver.resize(cachePath + sourceFilePath, cachePath + resizedFilePath, { width, height });

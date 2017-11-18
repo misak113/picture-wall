@@ -170,3 +170,8 @@ const port = process.env.PORT || 8083;
 app.listen(port, () => {
 	console.log('Server listen on port ' + port);
 });
+
+process.on('uncaughtException', (error) => console.error(error));
+process.on('unhandledRejection', (error) => {
+	throw error;
+});

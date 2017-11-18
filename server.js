@@ -9,10 +9,14 @@ const multer = require('multer');
 
 const publicPath = __dirname + '/public';
 const distPath = __dirname + '/dist';
-const uploadPath = __dirname + '/upload';
 
 const configPath = process.argv[2] === '--config' ? process.argv[3] : __dirname + '/config.json';
 const config = require(configPath);
+
+const cachePath = config.cachePath || os.tmpdir() + '/cache';
+if (!fs.existsSync(cachePath)) {
+	fs.mkdirSync(cachePath);
+}
 
 const DataDriver = require(config.dataDriver.module);
 const FileDriver = require(config.fileDriver.module);
@@ -69,11 +73,11 @@ const upload = multer({ dest: os.tmpdir() });
 app.use(bodyParser.json());
 app.use(express.static(publicPath));
 app.use(express.static(distPath));
-app.use(express.static(uploadPath));
+app.use(express.static(cachePath));
 app.use('/admin', auth);
 app.use('/admin', auth, express.static(publicPath));
 app.use('/admin', auth, express.static(distPath));
-app.use('/admin', auth, express.static(uploadPath));
+app.use('/admin', auth, express.static(cachePath));
 
 app.get('/positions', async function (req, res) {
 	res.send(await dataDriver.getData('positions'));
@@ -136,14 +140,14 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, async function (req, res) {
 	res.header('Content-Type', 'image/' + extension.substring(1));
 	try {
 		const resizedImageData = await fileDriver.getFile(resizedFilePath);
-		fs.writeFileSync(uploadPath + resizedFilePath, resizedImageData); // Do cache on local FS
+		fs.writeFileSync(cachePath + resizedFilePath, resizedImageData); // Do cache on local FS
 		res.send(resizedImageData);
 	} catch (error) {
 		const sourceImageData = await fileDriver.getFile(sourceFilePath);
-		fs.writeFileSync(uploadPath + sourceFilePath, sourceImageData); // Do cache on local FS
+		fs.writeFileSync(cachePath + sourceFilePath, sourceImageData); // Do cache on local FS
 		try {
-			await imageResizeDriver.resize(uploadPath + sourceFilePath, uploadPath + resizedFilePath, { width, height });
-			const resizedImageData = fs.readFileSync(uploadPath + resizedFilePath);
+			await imageResizeDriver.resize(cachePath + sourceFilePath, cachePath + resizedFilePath, { width, height });
+			const resizedImageData = fs.readFileSync(cachePath + resizedFilePath);
 			await fileDriver.saveFile(resizedFilePath, resizedImageData);
 			res.send(resizedImageData);
 		} catch (error) {

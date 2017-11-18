@@ -132,7 +132,8 @@ app.post('/admin/picture', auth, upload.single('file'), (req, res) => {
 		const fileHash = computeFileHash(data);
 		const uploadFileName = fileHash + extension;
 		const uploadFilePath = '/picture/' + uploadFileName;
-		await fileDriver.saveFile(uploadFilePath, data)
+		const mimeType = file.mimetype;
+		await fileDriver.saveFile(uploadFilePath, data, mimeType)
 		res.send({
 			fileName: uploadFileName
 		});
@@ -145,7 +146,8 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, async function (req, res) {
 	const extension = getExtension(fileName);
 	const sourceFilePath = '/picture/' + fileName;
 	const resizedFilePath = '/picture/resized/' + width + 'x' + height + '_' + fileName;
-	res.header('Content-Type', 'image/' + extension.substring(1));
+	const mimeType = 'image/' + extension.substring(1);
+	res.header('Content-Type', mimeType);
 	try {
 		const resizedImageData = await fileDriver.getFile(resizedFilePath);
 		await ensureDirectory(path.dirname(cachePath + resizedFilePath));
@@ -158,7 +160,7 @@ app.get(/\/picture\/resized\/(\d+)x(\d+)_(.+)/, async function (req, res) {
 		try {
 			await imageResizeDriver.resize(cachePath + sourceFilePath, cachePath + resizedFilePath, { width, height });
 			const resizedImageData = fs.readFileSync(cachePath + resizedFilePath);
-			await fileDriver.saveFile(resizedFilePath, resizedImageData);
+			await fileDriver.saveFile(resizedFilePath, resizedImageData, mimeType);
 			res.send(resizedImageData);
 		} catch (error) {
 			res.status(500).send(sourceImageData);

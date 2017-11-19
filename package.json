@@ -1,6 +1,6 @@
 {
   "name": "picture-wall",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Picture Wall ============",
   "main": "server.js",
   "dependencies": {
